@@ -7,7 +7,6 @@
 #include "DCMotor.h"
 #include "DebounceIn.h"
 #include "FastPWM.h"
-#include "SensorBar.h"
 #include <Eigen/Dense>
 
 #define M_PIf 3.14159265358979323846f // pi
@@ -28,8 +27,7 @@ void toggle_do_execute_main_fcn(); // custom function which is getting executed
                                    // below
 
 // main runs as an own thread
-int main()
-{
+int main() {
 
   // attach button fall function address to user button object
   user_button.fall(&toggle_do_execute_main_fcn);
@@ -83,54 +81,28 @@ int main()
 
   /***************************** DC MOTORS END *****************************/
 
-  /***************************** SENSOR BAR ********************************/
-  // sensor bar
-  const float bar_dist = 0.114f;
-  // distance from wheel axis to leds on sensor bar / array in meters
-  SensorBar sensor_bar(PB_9, PB_8, bar_dist);
-
-  // angle measured from sensor bar (black line) relative to robot
-  float angle{0.0f};
-  /***************************** END OF SENSOR BAR *************************/
-
-  /****** CONTROLLER THINGS ******/
-  // rotational velocity controller
-  const float Kp{5.0f};
-  const float wheel_vel_max = 2.0f * M_PIf * motor_M2.getMaxPhysicalVelocity();
-  /****** END OF CONTROLLER THINGS ******/
-
   // start timer
   main_task_timer.start();
 
   // this loop will run forever
-  while (true)
-  {
+  while (true) {
     main_task_timer.reset();
 
     // print to the serial terminal
     // printf("US distance cm: %f \n", ir_distance_cm);
 
-    if (do_execute_main_task)
-    {
+    if (do_execute_main_task) {
 
       // visual feedback that the main task is executed, setting this once would
       // actually be enough
       led1 = 1;
       enable_motors = 1;
 
-      // only update sensor bar angle if an led is triggered
-      if (sensor_bar.isAnyLedActive())
-        angle = sensor_bar.getAvgAngleRad();
-
       // set robot velocities
-      // robot_coord(0) = 0.1f; // set desired translational velocity in m/s
-      // robot_coord(1) = 1.0f; // turn velocity // set desired rotational velocity
-                             // in rad/s around the z axis
+      robot_coord(0) = 1.0f; // set desired translational velocity in m/s
+      robot_coord(1) = 0.5f; // set desired rotational velocity in rad/s
 
       // map robot velocities to wheel velocities in rad/sec
-      // control algorithm for robot velocities
-      robot_coord = {0.5f * wheel_vel_max * r_wheel, // half of the max. forward velocity
-                     Kp * angle};                    // simple proportional angle controller
       wheel_speed = Cwheel2robot.inverse() * robot_coord;
 
       // setpoints for the dc motors in rps
@@ -139,24 +111,9 @@ int main()
       motor_M2.setVelocity(wheel_speed(1) / (2.0f * M_PIf));
       // set a desired speed for speed controlled dc motors M2
 
-      // print to the serial terminal
-      printf("Average Angle: %0.2f\n", angle);
-      //   printf("Averaged Bar Raw: |  %0.2f  | %0.2f |  %0.2f |  %0.2f |  %0.2f | "
-      //          " %0.2f |  %0.2f |  %0.2f | ",
-      //          sensor_bar.getAvgBit(0), sensor_bar.getAvgBit(1),
-      //          sensor_bar.getAvgBit(2), sensor_bar.getAvgBit(3),
-      //          sensor_bar.getAvgBit(4), sensor_bar.getAvgBit(5),
-      //          sensor_bar.getAvgBit(6), sensor_bar.getAvgBit(7));
-      //   printf("Mean Left: %0.2f, Mean Center: %0.2f, Mean Right: %0.2f \n",
-      //          sensor_bar.getMeanThreeAvgBitsLeft(),
-      //          sensor_bar.getMeanFourAvgBitsCenter(),
-      //          sensor_bar.getMeanThreeAvgBitsRight());
-    }
-    else
-    {
+    } else {
       // the following code block gets executed only once
-      if (do_reset_all_once)
-      {
+      if (do_reset_all_once) {
         do_reset_all_once = false;
         // reset variables and objects
         led1 = 0;
@@ -178,8 +135,7 @@ int main()
   }
 }
 
-void toggle_do_execute_main_fcn()
-{
+void toggle_do_execute_main_fcn() {
   // toggle do_execute_main_task if the button was pressed
   do_execute_main_task = !do_execute_main_task;
   // set do_reset_all_once to true if do_execute_main_task changed from false to
