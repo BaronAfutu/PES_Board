@@ -33,9 +33,7 @@ We assume that you know the general structure of the PES board, if not, please v
 
 The first task will be the integration of two servo motors and the corresponding calibration process.
 
-1. Refer to the Servo manual for a step-by-step hardware tutorial on the usage of a servo motor and on the calibration process. There you can find also information on how to connect the servos to the PES board. Follow the instructions outlined in the hardware tutorial to complete the calibration.
-
-    > [Tutorial Servo](servo.md)
+Refer to the Servo manual for a step-by-step hardware tutorial on the usage of a servo motor and on the calibration process. There you can find also information on how to connect the servos to the PES board. Follow the instructions outlined in the hardware tutorial to complete the calibration: [Tutorial Servo](servo.md)
 
 ## Part 2
 
@@ -96,8 +94,8 @@ mechanical_button.mode(PullUp);    // sets pullup between pin and 3.3 V, so that
                                    // is a defined potential
 ```
 
-3. Read the ultrasonic sensor manual and create an object in the ``main()`` function
-    >[Ultrasonic Sensor Manual](ultrasonic_sensor.md)
+3. Read the ultrasonic sensor tutorial and create an object in the ``main()`` function
+    >[Tutorial Ultrasonic Sensor](ultrasonic_sensor.md)
 4. Make sure that you add a reading command and a statement to handle non-valid measurement. This should be placed inside the ``while()`` loop in the scope of the ``if()`` statement, so that it is executed after clicking the **USER** button:
 
 ```cpp
