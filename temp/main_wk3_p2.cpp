@@ -25,17 +25,9 @@ void toggle_do_execute_main_fcn(); // custom function which is getting executed
                                    // when user button gets pressed, definition
                                    // below
 
-// set up states for state machine
-enum RobotState {
-  INITIAL,
-  SLEEP,
-  FORWARD,
-  BACKWARD,
-  EMERGENCY
-} robot_state = RobotState::INITIAL;
-
 // main runs as an own thread
-int main() {
+int main()
+{
 
   // attach button fall function address to user button object
   user_button.fall(&toggle_do_execute_main_fcn);
@@ -149,17 +141,29 @@ int main() {
 
   /***************************** DC MOTORS END *****************************/
 
+  // set up states for state machine
+  enum RobotState
+  {
+    INITIAL,
+    SLEEP,
+    FORWARD,
+    BACKWARD,
+    EMERGENCY
+  } robot_state = RobotState::INITIAL;
+  
   // start timer
   main_task_timer.start();
 
   // this loop will run forever
-  while (true) {
+  while (true)
+  {
     main_task_timer.reset();
 
     // print to the serial terminal
     // printf("US distance cm: %f \n", ir_distance_cm);
 
-    if (do_execute_main_task) {
+    if (do_execute_main_task)
+    {
 
       // visual feedback that the main task is executed, setting this once would
       // actually be enough
@@ -187,15 +191,18 @@ int main() {
       //   printf("Motor position: %f \n", motor_M3.getRotation());
 
       // state machine
-      switch (robot_state) {
-      case RobotState::INITIAL: {
+      switch (robot_state)
+      {
+      case RobotState::INITIAL:
+      {
         // enable hardwaredriver dc motors: 0 -> disabled, 1 -> enabled
         enable_motors = 1;
         robot_state = RobotState::SLEEP;
 
         break;
       }
-      case RobotState::FORWARD: {
+      case RobotState::FORWARD:
+      {
         // press is moving forward until it reaches 2.9f rotations,
         // when reaching the value go to BACKWARD
         motor_M3.setRotation(2.9f);
@@ -210,7 +217,8 @@ int main() {
 
         break;
       }
-      case RobotState::SLEEP: {
+      case RobotState::SLEEP:
+      {
         // wait for the signal from the user, so to run the process
         // that is triggered by clicking the mechanical button
         // then go to the FORWARD state
@@ -219,7 +227,8 @@ int main() {
 
         break;
       }
-      case RobotState::EMERGENCY: {
+      case RobotState::EMERGENCY:
+      {
         // disable the motion planner and
         // move to the initial position asap
         // then reset the system
@@ -230,7 +239,8 @@ int main() {
 
         break;
       }
-      case RobotState::BACKWARD: {
+      case RobotState::BACKWARD:
+      {
         // move backwards to the initial position
         // and go to the SLEEP state if reached
         motor_M3.setRotation(0.0f);
@@ -240,7 +250,8 @@ int main() {
 
         break;
       }
-      default: {
+      default:
+      {
 
         break; // do nothing
       }
@@ -249,10 +260,12 @@ int main() {
       // print to the serial terminal
       printf("US Sensor in cm: %f, DC Motor Rotations: %f\n", ir_distance_cm,
              motor_M3.getRotation());
-
-    } else {
+    }
+    else
+    {
       // the following code block gets executed only once
-      if (do_reset_all_once) {
+      if (do_reset_all_once)
+      {
         do_reset_all_once = false;
 
         // reset variables and objects
@@ -283,7 +296,8 @@ int main() {
   }
 }
 
-void toggle_do_execute_main_fcn() {
+void toggle_do_execute_main_fcn()
+{
   // toggle do_execute_main_task if the button was pressed
   do_execute_main_task = !do_execute_main_task;
   // set do_reset_all_once to true if do_execute_main_task changed from false to
