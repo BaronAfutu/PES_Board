@@ -41,7 +41,8 @@ int main()
     // --- adding variables and objects and applying functions starts here ---
 
     // serial stream to send data over uart
-    SerialStream serialStream(PB_UNUSED_UART_TX, PB_UNUSED_UART_RX);
+    SerialStream serialStream(PB_UNUSED_UART_TX /*PB_10*/,
+                              PB_UNUSED_UART_RX /*PC_5 */);
     int cntr_1 = 0;
     int cntr_2 = 0;
 
@@ -56,6 +57,8 @@ int main()
     // this loop will run forever
     while (true) {
         main_task_timer.reset();
+
+        // --- code that runs every cycle at the start goes here ---
 
         // measure delta time
         const microseconds time_us = logging_timer.elapsed_time();
@@ -91,7 +94,7 @@ int main()
         // toggling the user led
         user_led = !user_led;
 
-        // --- code that runs every cycle goes here ---
+        // --- code that runs every cycle at the end goes here ---
 
         // print to the serial terminal
         if ((cntr_1 % 50 == 0) && (cntr_1 != 0))
