@@ -46,7 +46,8 @@ int main()
     IMU imu(PB_IMU_SDA, PB_IMU_SCL);
 
     // serial stream to send data over uart
-    SerialStream serialStream(PB_UNUSED_UART_TX, PB_UNUSED_UART_RX);
+    SerialStream serialStream(PB_UNUSED_UART_TX /*PB_10*/,
+                              PB_UNUSED_UART_RX /*PC_5 */);
 
     // additional timer to measure time elapsed since last call
     Timer logging_timer;
@@ -59,6 +60,8 @@ int main()
     // this loop will run forever
     while (true) {
         main_task_timer.reset();
+
+        // --- code that runs every cycle at the start goes here ---
 
         // measure delta time
         const microseconds time_us = logging_timer.elapsed_time();
@@ -101,7 +104,7 @@ int main()
         // toggling the user led
         user_led = !user_led;
 
-        // --- code that runs every cycle goes here ---
+        // --- code that runs every cycle at the end goes here ---
 
         // read timer and make the main thread sleep for the remaining time span (non blocking)
         int main_task_elapsed_time_ms = duration_cast<milliseconds>(main_task_timer.elapsed_time()).count();
