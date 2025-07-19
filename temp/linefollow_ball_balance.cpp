@@ -14,11 +14,6 @@
  *      to prevent collision
  *  This is the final line following code
  */
-
- /**
-  * PS: the main codes are linefollow_ball_balance.cpp and main_maze_RHR_complete_robot3.cpp
-  *     located in /temp/final/ folder
-  */
 #include "mbed.h"
 
 // pes board pin map
